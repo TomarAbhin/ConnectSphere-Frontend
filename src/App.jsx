@@ -22,19 +22,22 @@ function AppShell({ children }) {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in">{children}</main>
+      <main className="mx-auto w-full max-w-[1600px] px-4 py-4 sm:px-6 lg:px-8 animate-fade-in">{children}</main>
     </div>
   );
 }
 
-export default function App() {
+function ProfileRouteRedirect() {
   const { isLoggedIn } = useAuth();
+  return <Navigate to={isLoggedIn ? '/feed' : '/login'} replace />;
+}
 
+export default function App() {
   return (
     <Routes>
       <Route
         path="/"
-        element={<Navigate to={isLoggedIn ? '/feed' : '/explore'} replace />}
+        element={<Navigate to="/feed" replace />}
       />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -72,7 +75,7 @@ export default function App() {
       />
       <Route
         path="/profile"
-        element={<Navigate to={isLoggedIn ? '/feed' : '/login'} replace />}
+        element={<ProfileRouteRedirect />}
       />
       <Route
         path="/profile/edit"

@@ -46,7 +46,7 @@ export default function SearchPage() {
   ], [posts.length, users.length, hashtags.length]);
 
   return (
-    <div className="space-y-5 animate-fade-in">
+    <div className="dashboard-surface space-y-5 animate-fade-in">
       {/* Hero */}
       <div className="hero-card p-6 text-white">
         <div className="relative z-10">
@@ -75,10 +75,10 @@ export default function SearchPage() {
       <div className="flex gap-2">
         {tabs.map((item) => (
           <button key={item.key} type="button" onClick={() => setTab(item.key)}
-            className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition ${
+            className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-sm font-medium transition ${
               tab === item.key
-                ? 'bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md shadow-brand-500/20'
-                : 'bg-white/80 text-slate-600 border border-slate-100 hover:bg-white hover:shadow-sm'
+                ? 'border-white/10 bg-white/10 text-white shadow-md shadow-black/20'
+                : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
             {item.label}

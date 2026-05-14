@@ -6,6 +6,7 @@ export const likeApi = {
   hasLiked: (targetId, targetType) => api.get('/likes/has-liked', { params: { targetId, targetType } }).then((res) => res.data),
   // summary is public; use the gateway path without Authorization headers.
   summary: (targetId, targetType) => plainApi.get(`/likes/summary/${targetType}/${targetId}`).then((res) => res.data),
+  getLikesByTarget: (targetType, targetId) => plainApi.get(`/likes/target/${targetType}/${targetId}`).then((res) => res.data),
   changeReaction: (likeId, payload) => api.put(`/likes/${likeId}/reaction`, payload).then((res) => res.data),
   getLikesByUser: (userId) => api.get(`/likes/user/${userId}`).then((res) => res.data),
 };

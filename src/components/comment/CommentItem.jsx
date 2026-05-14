@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MessageCircle, ThumbsUp, Send, Flag, Pencil, Trash2 } from 'lucide-react';
 import UserAvatar from '../user/UserAvatar';
@@ -9,7 +10,7 @@ import { reportApi } from '../../api/reportApi';
 import { promptForReportReason } from '../../utils/reportPrompt';
 import { commentApi } from '../../api/commentApi';
 
-export default function CommentItem({ comment, onReply, onLike }) {
+export default function CommentItem({ comment, onReply, onLike, depth = 0 }) {
   const queryClient = useQueryClient();
   const [showReply, setShowReply] = useState(false);
   const [replyContent, setReplyContent] = useState('');
@@ -19,10 +20,19 @@ export default function CommentItem({ comment, onReply, onLike }) {
   const rawAuthor = comment?.author || comment?.user || {};
   const authorId = rawAuthor?.userId || rawAuthor?.id || comment?.authorId || comment?.userId;
   const author = rawAuthor || {};
-  const authorLabel = author.fullName || author.username || author.name || (authorId ? `User #${authorId}` : 'User');
+  const authorLabel = author.fullName || author.username || author.name || comment?.authorFullName || comment?.authorUsername || (authorId ? `User #${authorId}` : 'User');
   const commentId = comment?.commentId || comment?.id;
   const isOwnComment = Boolean(currentUserId && authorId && String(currentUserId) === String(authorId));
   const canModerate = Boolean(canInteract && (currentUserRole === 'ADMIN' || isOwnComment));
+  const canReply = canInteract && depth === 0;
+
+  const repliesQuery = useQuery({
+    queryKey: ['comment-replies', commentId],
+    queryFn: () => commentApi.getReplies(commentId),
+    enabled: Boolean(commentId && depth === 0),
+  });
+  const replies = Array.isArray(repliesQuery.data) ? repliesQuery.data : repliesQuery.data?.content || [];
+  const likeCount = comment?.likesCount ?? comment?.likeCount ?? 0;
 
   const reportMutation = useMutation({
     mutationFn: (payload) => reportApi.createReport(payload),
@@ -78,7 +88,7 @@ export default function CommentItem({ comment, onReply, onLike }) {
   return (
     <div className="glass-card p-4 animate-fade-in">
       <div className="flex items-start gap-3">
-        <UserAvatar name={author.fullName || author.username} src={author.profilePicUrl || author.profilePicture || author.avatar} size="sm" />
+        <UserAvatar name={author.fullName || author.username || comment?.authorFullName || comment?.authorUsername} src={author.profilePicUrl || author.profilePicture || author.avatar || comment?.authorProfilePicUrl} size="sm" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <div>
@@ -89,15 +99,15 @@ export default function CommentItem({ comment, onReply, onLike }) {
               <button type="button" onClick={() => onLike?.(comment)}
                 className="reaction-btn inline-flex items-center gap-1.5 rounded-xl bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-600">
                 <ThumbsUp className="h-3.5 w-3.5" />
-                {comment?.likeCount ?? 0}
+                {likeCount}
               </button>
             ) : (
-              <span className="rounded-xl bg-slate-50 px-2.5 py-1.5 text-xs text-slate-400">{comment?.likeCount ?? 0} likes</span>
+              <span className="rounded-xl bg-slate-50 px-2.5 py-1.5 text-xs text-slate-400">{likeCount} likes</span>
             )}
           </div>
           <p className="mt-2 text-sm leading-relaxed text-slate-700">{comment?.content}</p>
           <div className="mt-3 flex items-center gap-2">
-            {canInteract ? (
+            {canReply ? (
               <button type="button" onClick={() => setShowReply((v) => !v)}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100">
                 <MessageCircle className="h-3.5 w-3.5" />
@@ -141,7 +151,7 @@ export default function CommentItem({ comment, onReply, onLike }) {
               </div>
             </div>
           ) : null}
-          {showReply && canInteract ? (
+          {showReply && canReply ? (
             <div className="mt-3 animate-slide-down">
               <textarea value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={2}
                 placeholder="Write a reply…" className="cs-input resize-none text-sm" />
@@ -159,6 +169,13 @@ export default function CommentItem({ comment, onReply, onLike }) {
                   Cancel
                 </button>
               </div>
+            </div>
+          ) : null}
+          {depth === 0 && replies.length > 0 ? (
+            <div className="mt-4 space-y-3 border-l border-slate-100 pl-4 sm:pl-6">
+              {replies.map((reply) => (
+                <CommentItem key={reply?.commentId || reply?.id} comment={reply} onReply={onReply} onLike={onLike} depth={depth + 1} />
+              ))}
             </div>
           ) : null}
         </div>

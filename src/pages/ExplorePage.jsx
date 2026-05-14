@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import EmptyState from '../components/common/EmptyState';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import PostList from '../components/post/PostList';
+import { postApi } from '../api/postApi';
 import { searchApi } from '../api/searchApi';
 import { TrendingUp, Search, UserPlus } from 'lucide-react';
 
 export default function ExplorePage() {
-  const postsQuery = useQuery({ queryKey: ['explore-posts'], queryFn: () => searchApi.searchPosts('') });
+  const postsQuery = useQuery({ queryKey: ['explore-posts-public'], queryFn: () => postApi.getFeed() });
   const tagsQuery = useQuery({ queryKey: ['trending-hashtags'], queryFn: searchApi.trendingHashtags });
 
   const posts = Array.isArray(postsQuery.data) ? postsQuery.data : postsQuery.data?.content || [];
@@ -15,7 +16,7 @@ export default function ExplorePage() {
   const totalTags = hashtags.length;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="dashboard-surface grid gap-6 lg:grid-cols-[1fr_320px]">
       <section className="space-y-5">
         {/* Hero */}
         <div className="hero-card p-6 text-white animate-fade-in">

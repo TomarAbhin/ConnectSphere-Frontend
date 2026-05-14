@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../api/authApi';
 import { mediaApi } from '../api/mediaApi';
 import { useAuth } from '../hooks/useAuth';
@@ -11,6 +11,7 @@ import { Camera, Save } from 'lucide-react';
 export default function EditProfilePage() {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({ username: '', fullName: '', bio: '', profilePicUrl: '' });
 
   const profileQuery = useQuery({ queryKey: ['my-profile'], queryFn: authApi.profile });
@@ -28,8 +29,16 @@ export default function EditProfilePage() {
 
   const mutation = useMutation({
     mutationFn: authApi.updateProfile,
-    onSuccess: (data) => {
-      updateUser(data);
+    onSuccess: async (data) => {
+      const updatedProfile = data?.user || data?.profile || data;
+      const refreshedProfile = await authApi.profile().catch(() => null);
+      updateUser({
+        ...(user || {}),
+        ...(refreshedProfile || {}),
+        ...(updatedProfile || {}),
+      });
+      queryClient.invalidateQueries({ queryKey: ['my-profile'] });
+      queryClient.invalidateQueries({ queryKey: ['profile', user?.userId] });
       toast.success('Profile updated');
       navigate(`/profile/${user?.userId}`);
     },
@@ -61,13 +70,13 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="mx-auto max-w-xl animate-fade-in">
+    <div className="auth-surface mx-auto max-w-xl animate-fade-in">
       <div className="glass-card-static overflow-hidden">
         {/* Cover + Avatar */}
-        <div className="h-20 bg-gradient-to-r from-brand-600 via-purple-500 to-pink-500" />
+        <div className="auth-hero-card h-20" />
         <div className="flex justify-center -mt-10">
           <div className="relative">
-            <div className="rounded-full ring-4 ring-white">
+            <div className="rounded-full ring-4 ring-[#111319]">
               <UserAvatar name={form.fullName || form.username} src={form.profilePicUrl} size="xl" />
             </div>
             <label className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-brand-600 text-white shadow-lg transition hover:bg-brand-500">
@@ -78,7 +87,7 @@ export default function EditProfilePage() {
         </div>
 
         <div className="p-6 pt-4">
-          <h1 className="text-center text-xl font-extrabold tracking-tight text-slate-900">Edit profile</h1>
+          <h1 className="text-center text-xl font-extrabold tracking-tight text-white">Edit profile</h1>
           <p className="mt-1 text-center text-sm text-slate-400">Update your public information.</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">

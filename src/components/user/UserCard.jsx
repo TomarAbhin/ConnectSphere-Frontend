@@ -10,6 +10,7 @@ import UserAvatar from './UserAvatar';
 export default function UserCard({ user, action }) {
   const currentUserId = useAuthStore((state) => state.user?.userId);
   const currentUserRole = useAuthStore((state) => state.user?.role);
+  const isAdminAccount = user?.role === 'ADMIN';
   const canReport = Boolean(currentUserId && currentUserRole !== 'GUEST' && user?.userId && String(currentUserId) !== String(user.userId));
 
   const reportMutation = useMutation({
@@ -39,7 +40,9 @@ export default function UserCard({ user, action }) {
           <p className="truncate font-semibold text-slate-800">{displayName}</p>
           {user?.username ? <p className="truncate text-sm text-slate-400">@{user.username}</p> : null}
           {user?.role ? (
-            <span className="cs-badge mt-1 bg-brand-50 text-brand-600">{user.role}</span>
+            <span className={`cs-badge mt-1 ${isAdminAccount ? 'bg-sky-50 text-sky-700 border border-sky-100' : 'bg-brand-50 text-brand-600'}`}>
+              {user.role}
+            </span>
           ) : null}
           <div className="mt-1.5">
             <span className={`cs-badge ${user?.active === false ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>

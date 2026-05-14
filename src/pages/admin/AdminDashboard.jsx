@@ -45,7 +45,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="dashboard-surface space-y-6 animate-fade-in">
       {/* Hero */}
       <div className="hero-card p-6 text-white">
         <div className="relative z-10">

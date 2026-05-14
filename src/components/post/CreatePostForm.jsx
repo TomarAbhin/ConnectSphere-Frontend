@@ -52,13 +52,13 @@ export default function CreatePostForm() {
   const VisIcon = VISIBILITY_OPTIONS.find((v) => v.value === visibility)?.icon || Globe;
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card overflow-hidden animate-fade-in">
+    <form id="compose-post" onSubmit={handleSubmit} className="glass-card overflow-hidden animate-fade-in border border-brand-100/50">
       <div className="flex items-center justify-between gap-3 px-5 pt-5">
         <div>
           <p className="text-sm font-semibold text-slate-800">Create a post</p>
-          <p className="text-xs text-slate-400 mt-0.5">Choose visibility and share with your network.</p>
+          <p className="mt-0.5 text-xs text-slate-400">Share a thought, image, or update with your network.</p>
         </div>
-        <span className="cs-badge bg-brand-50 text-brand-600 border border-brand-100">
+        <span className="cs-badge bg-sky-50 text-sky-700 border border-sky-100">
           <VisIcon className="h-3 w-3" /> Composer
         </span>
       </div>
@@ -120,7 +120,7 @@ export default function CreatePostForm() {
         <p className="text-xs text-slate-400">Public by default. Switch visibility for a narrower audience.</p>
         <button type="submit" disabled={uploading || createPost.isPending} className="cs-btn cs-btn-primary">
           <Send className="h-4 w-4" />
-          {uploading ? 'Uploading…' : 'Post'}
+          {uploading ? 'Uploading…' : 'Share post'}
         </button>
       </div>
     </form>

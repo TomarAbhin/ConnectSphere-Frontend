@@ -16,7 +16,8 @@ export const mediaApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     }).then((res) => res.data);
   },
-  getActiveStories: (userId) => api.get('/stories/active', { params: { userId } }).then((res) => res.data),
+  getActiveStories: (userId) => api.get('/stories/active', { params: { userId } }).then((res) => res.data?.items || res.data?.content || res.data || []),
   createStory: (payload) => api.post('/stories', payload).then((res) => res.data),
+  viewStory: (storyId) => api.put(`/stories/${storyId}/view`).then((res) => res.data),
   deleteStory: (storyId) => api.delete(`/stories/${storyId}`).then((res) => res.data),
 };

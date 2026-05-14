@@ -1,4 +1,4 @@
-import { BASE_URL } from './constants';
+import { BASE_URL, MEDIA_SERVICE_URL } from './constants';
 
 export function resolveMediaUrl(value) {
   if (typeof value !== 'string') return '';
@@ -9,17 +9,27 @@ export function resolveMediaUrl(value) {
     return trimmed;
   }
 
-  const normalized = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
-  if (normalized.startsWith('/api/v1/media/')) {
-    return `${BASE_URL.replace(/\/api\/v1\/?$/, '')}${normalized}`;
+  const normalized = trimmed.replace(/^\/+/, '');
+  const gatewayRoot = BASE_URL.replace(/\/api\/v1\/?$/, '');
+
+  if (normalized.startsWith('api/v1/media/')) {
+    return `${gatewayRoot}/${normalized}`;
   }
 
-  if (normalized.startsWith('/media/')) {
-    return `${BASE_URL}${trimmed}`;
+  if (normalized.startsWith('media/files/')) {
+    return `${MEDIA_SERVICE_URL}/${normalized}`;
   }
 
-  if (normalized.includes('/media/files/')) {
-    return `${BASE_URL}${normalized.startsWith('/api/v1/') ? normalized.replace(/^\/api\/v1/, '') : normalized}`;
+  if (normalized.startsWith('media/')) {
+    return `${MEDIA_SERVICE_URL}/${normalized}`;
+  }
+
+  if (normalized.startsWith('uploads/media/')) {
+    return `${MEDIA_SERVICE_URL}/media/files/${normalized.replace(/^uploads\/media\//, '')}`;
+  }
+
+  if (/\.(png|jpe?g|gif|webp|avif|bmp|svg|mp4|webm|mov|m4v)(\?|#|$)/i.test(normalized) || /^[a-f0-9-]{16,}\.[a-z0-9]{2,5}$/i.test(normalized)) {
+    return `${MEDIA_SERVICE_URL}/media/files/${normalized}`;
   }
 
   return trimmed;

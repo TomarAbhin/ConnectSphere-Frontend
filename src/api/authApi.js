@@ -1,9 +1,9 @@
-import api from './axiosInstance';
+import api, { plainApi } from './axiosInstance';
 
 export const authApi = {
-  register: (payload) => api.post('/auth/register', payload).then((res) => res.data),
+  register: (payload) => plainApi.post('/auth/register', payload).then((res) => res.data),
   login: (payload) =>
-    api.post('/auth/login', {
+    plainApi.post('/auth/login', {
       emailOrUsername: payload.emailOrUsername || payload.email,
       password: payload.password,
     }).then((res) => res.data),
@@ -11,7 +11,7 @@ export const authApi = {
   refresh: (refreshToken) =>
     api.post('/auth/refresh', { refreshToken }, { headers: { Authorization: `Bearer ${refreshToken}` } }).then((res) => res.data),
   profile: () => api.get('/auth/profile').then((res) => res.data),
-  getUserById: (userId) => api.get(`/auth/user/${userId}`).then((res) => res.data),
+  getUserById: (userId) => api.get(`/auth/users/${userId}`).then((res) => res.data),
   updateProfile: (payload) => api.put('/auth/profile', payload).then((res) => res.data),
   changePassword: (payload) => api.put('/auth/password', payload).then((res) => res.data),
   deactivate: () => api.delete('/auth/deactivate').then((res) => res.data),

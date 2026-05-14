@@ -43,7 +43,7 @@ export default function AdminUsers() {
   if (query.isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-5 animate-fade-in">
+    <div className="dashboard-surface space-y-5 animate-fade-in">
       <div className="glass-card-static p-6">
         <div className="flex items-center gap-3 mb-1">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-purple-500 text-white shadow-sm">
@@ -66,32 +66,38 @@ export default function AdminUsers() {
 
       <div className="space-y-3">
         {users.length > 0 ? users.map((user) => (
-          <UserCard key={user.userId || user.id} user={user}
+          <UserCard
+            key={user.userId || user.id}
+            user={user}
             action={
-              <div className="flex items-center gap-2">
-                {user.active === false ? (
+              user.role === 'ADMIN' ? (
+                <span className="cs-badge bg-sky-50 text-sky-700 border border-sky-100">Protected admin</span>
+              ) : (
+                <div className="flex items-center gap-2">
+                  {user.active === false ? (
+                    <button type="button"
+                      onClick={() => reactivateMutation.mutate(user.userId || user.id)}
+                      className="cs-btn cs-btn-secondary text-xs py-1.5 px-3">
+                      <RotateCcw className="h-3 w-3" /> Reactivate
+                    </button>
+                  ) : (
+                    <button type="button"
+                      onClick={() => suspendMutation.mutate(user.userId || user.id)}
+                      className="cs-btn cs-btn-secondary text-xs py-1.5 px-3">
+                      <Ban className="h-3 w-3" /> Suspend
+                    </button>
+                  )}
                   <button type="button"
-                    onClick={() => reactivateMutation.mutate(user.userId || user.id)}
-                    className="cs-btn cs-btn-secondary text-xs py-1.5 px-3">
-                    <RotateCcw className="h-3 w-3" /> Reactivate
+                    onClick={() => {
+                      if (window.confirm(`Delete ${user.username || user.fullName || 'this user'}?`)) {
+                        deactivateMutation.mutate(user.userId || user.id);
+                      }
+                    }}
+                    className="cs-btn cs-btn-danger text-xs py-1.5 px-3">
+                    <Trash2 className="h-3 w-3" /> Delete
                   </button>
-                ) : (
-                  <button type="button"
-                    onClick={() => suspendMutation.mutate(user.userId || user.id)}
-                    className="cs-btn cs-btn-secondary text-xs py-1.5 px-3">
-                    <Ban className="h-3 w-3" /> Suspend
-                  </button>
-                )}
-                <button type="button"
-                  onClick={() => {
-                    if (window.confirm(`Delete ${user.username || user.fullName || 'this user'}?`)) {
-                      deactivateMutation.mutate(user.userId || user.id);
-                    }
-                  }}
-                  className="cs-btn cs-btn-danger text-xs py-1.5 px-3">
-                  <Trash2 className="h-3 w-3" /> Delete
-                </button>
-              </div>
+                </div>
+              )
             }
           />
         )) : <EmptyState title="No users found" description="Try another search term." />}

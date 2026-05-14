@@ -1,8 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { postApi } from '../api/postApi';
+import { useAuth } from './useAuth';
 
 export function useFeed() {
-  return useQuery({ queryKey: ['feed'], queryFn: postApi.getFeed });
+  const { isLoggedIn, user } = useAuth();
+  return useQuery({
+    queryKey: ['feed', isLoggedIn ? 'signed-in' : 'public', user?.userId || 'guest'],
+    queryFn: postApi.getFeed,
+  });
 }
 
 export function usePost(postId) {

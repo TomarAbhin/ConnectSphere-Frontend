@@ -4,6 +4,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { postApi } from '../api/postApi';
 import { commentApi } from '../api/commentApi';
+import { likeApi } from '../api/likeApi';
 import PostCard from '../components/post/PostCard';
 import CommentList from '../components/comment/CommentList';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -26,8 +27,36 @@ export default function PostDetailPage() {
     onSuccess: () => {
       setContent('');
       queryClient.invalidateQueries({ queryKey: ['comments', id] });
+      queryClient.invalidateQueries({ queryKey: ['comment-replies'] });
       queryClient.invalidateQueries({ queryKey: ['post', id] });
       toast.success('Comment added');
+    },
+  });
+
+  const likeComment = useMutation({
+    mutationFn: async (comment) => {
+      const commentId = comment?.commentId || comment?.id;
+      if (!commentId) {
+        throw new Error('Comment id is required');
+      }
+
+      const likedState = await likeApi.hasLiked(commentId, 'COMMENT');
+      if (likedState?.liked) {
+        await likeApi.unlike(commentId, 'COMMENT');
+        return { action: 'unliked' };
+      }
+
+      await likeApi.like({ targetType: 'COMMENT', targetId: commentId, reactionType: 'LIKE' });
+      return { action: 'liked' };
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['comments', id] });
+      queryClient.invalidateQueries({ queryKey: ['comment-replies'] });
+      if (result?.action === 'unliked') {
+        toast.success('Comment unliked');
+      } else {
+        toast.success('Comment liked');
+      }
     },
   });
 
@@ -69,7 +98,7 @@ export default function PostDetailPage() {
           </div>
         )}
         <div className="mt-5">
-          <CommentList comments={Array.isArray(commentsQuery.data) ? commentsQuery.data : commentsQuery.data?.content || []} onReply={handleReply} onLike={async (comment) => { /* optional: like comment */ }} />
+          <CommentList comments={Array.isArray(commentsQuery.data) ? commentsQuery.data : commentsQuery.data?.content || []} onReply={handleReply} onLike={(comment) => likeComment.mutate(comment)} />
         </div>
       </section>
     </div>

@@ -71,6 +71,7 @@ export default function ProfilePage() {
   if (profileQuery.isError) return <EmptyState title="Profile unavailable" description="The profile could not be loaded right now." />;
 
   const profile = profileQuery.data || {};
+  const isProfileActive = profile.active !== false;
   const posts = Array.isArray(postsQuery.data) ? postsQuery.data : postsQuery.data?.content || [];
   const isOwnProfile = String(currentUser?.userId) === String(userId);
   const isGuest = currentUser?.role === 'GUEST';
@@ -88,7 +89,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="dashboard-surface space-y-6 animate-fade-in">
       {/* Profile header */}
       <section className="glass-card overflow-hidden">
         <div className="h-24 bg-gradient-to-r from-brand-600 via-purple-500 to-pink-500" />
@@ -101,6 +102,7 @@ export default function ProfilePage() {
               <div className="pb-1">
                 <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">{profileName}</h1>
                 <p className="text-sm text-slate-400">{profile.username ? `@${profile.username}` : 'Profile'}</p>
+                {!isProfileActive ? <span className="cs-badge mt-2 bg-rose-50 text-rose-700 border border-rose-100">Suspended profile</span> : null}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -112,7 +114,7 @@ export default function ProfilePage() {
                     <Pencil className="h-3.5 w-3.5" /> Edit Profile
                   </Link>
                 )
-              ) : isGuest ? (
+              ) : isGuest || !isProfileActive ? (
                 <span className="cs-badge bg-slate-100 text-slate-500">Read-only guest</span>
               ) : isFollowing ? (
                 <>

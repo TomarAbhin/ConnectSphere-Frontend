@@ -5,9 +5,10 @@ export function useAuth() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const refreshToken = useAuthStore((state) => state.refreshToken);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const login = useAuthStore((state) => state.login);
   const logout = useAuthStore((state) => state.logout);
   const updateUser = useAuthStore((state) => state.updateUser);
 
-  return { user, accessToken, refreshToken, isLoggedIn, login, logout, updateUser };
+  return { user, accessToken, refreshToken, isLoggedIn, hasHydrated, login, logout, updateUser };
 }

@@ -3,14 +3,14 @@ import { useState } from 'react';
 import EmptyState from '../../components/common/EmptyState';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import PostList from '../../components/post/PostList';
-import { searchApi } from '../../api/searchApi';
+import { postApi } from '../../api/postApi';
 import { Search, FileText } from 'lucide-react';
 
 export default function AdminPosts() {
   const [queryText, setQueryText] = useState('');
   const query = useQuery({
     queryKey: ['admin-posts', queryText],
-    queryFn: () => searchApi.adminPosts(queryText),
+    queryFn: () => postApi.adminPosts(queryText),
   });
 
   const posts = Array.isArray(query.data) ? query.data : query.data?.content || [];
@@ -18,7 +18,7 @@ export default function AdminPosts() {
   if (query.isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-5 animate-fade-in">
+    <div className="dashboard-surface space-y-5 animate-fade-in">
       <div className="glass-card-static p-6">
         <div className="flex items-center gap-3 mb-1">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white shadow-sm">

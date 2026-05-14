@@ -13,9 +13,9 @@
   --border-glass: rgba(255, 255, 255, 0.7);
   --border-subtle: rgba(148, 163, 184, 0.2);
   --shadow-brand: rgba(99, 102, 241, 0.12);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-primary: #e5e7eb;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
   --radius-card: 24px;
   --radius-input: 16px;
   --radius-button: 14px;
@@ -46,10 +46,11 @@ body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: var(--text-primary);
+  color-scheme: dark;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99, 102, 241, 0.12), transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(124, 58, 237, 0.06), transparent 50%),
-    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 30%, #eef2ff 60%, #f8fafc 100%);
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(168, 85, 247, 0.1), transparent 24%),
+    linear-gradient(180deg, #090b10 0%, #111319 45%, #0d0f14 100%);
   background-attachment: fixed;
 }
 
@@ -321,3 +322,181 @@ div[role="status"][class*="go"] {
 .stagger-3 { animation-delay: 0.15s; }
 .stagger-4 { animation-delay: 0.2s; }
 .stagger-5 { animation-delay: 0.25s; }
+
+/* ─── Dashboard Surface (Feed screen) ─── */
+.dashboard-surface {
+  color: #e5e7eb;
+}
+
+.dashboard-surface .glass-card,
+.dashboard-surface .glass-card-static {
+  background: rgba(22, 24, 31, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.28),
+    0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-surface .hero-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 45%, rgba(37, 99, 235, 0.82) 100%);
+}
+
+.dashboard-surface .cs-input {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+}
+
+.dashboard-surface .cs-input::placeholder {
+  color: #64748b;
+}
+
+.dashboard-surface .cs-input:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(96, 165, 250, 0.45);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.dashboard-surface .cs-btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.dashboard-surface .cs-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+.dashboard-surface .cs-badge {
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-surface [class*='text-slate-900'],
+.dashboard-surface [class*='text-slate-800'] {
+  color: #f8fafc;
+}
+
+.dashboard-surface [class*='text-slate-700'] {
+  color: #e2e8f0;
+}
+
+.dashboard-surface [class*='text-slate-600'] {
+  color: #cbd5e1;
+}
+
+.dashboard-surface [class*='text-slate-500'] {
+  color: #94a3b8;
+}
+
+.dashboard-surface [class*='text-slate-400'] {
+  color: #64748b;
+}
+
+.dashboard-surface [class*='bg-slate-50'] {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-surface [class*='bg-slate-100'] {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.dashboard-surface [class*='border-slate-100'],
+.dashboard-surface [class*='border-slate-200'] {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-surface [class*='hover:bg-white']:hover,
+.auth-surface [class*='hover:bg-white']:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-surface [class*='hover:bg-slate-50']:hover,
+.dashboard-surface [class*='hover:bg-slate-100']:hover,
+.auth-surface [class*='hover:bg-slate-50']:hover,
+.auth-surface [class*='hover:bg-slate-100']:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-surface [class*='hover:text-slate-700']:hover,
+.dashboard-surface [class*='hover:text-slate-800']:hover,
+.auth-surface [class*='hover:text-slate-700']:hover,
+.auth-surface [class*='hover:text-slate-800']:hover {
+  color: #f8fafc;
+}
+
+.dashboard-surface [class*='hover:border-brand-200']:hover,
+.auth-surface [class*='hover:border-brand-200']:hover {
+  border-color: rgba(96, 165, 250, 0.42);
+}
+
+.dashboard-surface [class*='hover:border-slate-100']:hover,
+.dashboard-surface [class*='hover:border-slate-200']:hover,
+.auth-surface [class*='hover:border-slate-100']:hover,
+.auth-surface [class*='hover:border-slate-200']:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Auth Surface ─── */
+.auth-surface {
+  color: #e5e7eb;
+}
+
+.auth-surface .glass-card-static,
+.auth-surface .glass-card {
+  background: rgba(18, 20, 27, 0.96);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.24),
+    0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.auth-surface .auth-hero-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(17, 24, 39, 0.95) 52%, rgba(37, 99, 235, 0.28) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(59, 130, 246, 0.08) inset;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-surface .auth-hero-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.12), transparent 38%);
+  pointer-events: none;
+}
+
+.auth-surface .cs-input {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+}
+
+.auth-surface .cs-input::placeholder {
+  color: #64748b;
+}
+
+.auth-surface .cs-input:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(96, 165, 250, 0.45);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.auth-surface .cs-btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.auth-surface .cs-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

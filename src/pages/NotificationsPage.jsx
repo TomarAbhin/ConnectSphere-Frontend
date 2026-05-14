@@ -47,7 +47,7 @@ export default function NotificationsPage() {
   if (notificationsQuery.isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-5 animate-fade-in">
+    <div className="dashboard-surface space-y-5 animate-fade-in">
       <div className="glass-card-static flex items-center justify-between gap-3 p-5">
         <div>
           <h1 className="text-xl font-extrabold tracking-tight text-slate-900">Notifications</h1>

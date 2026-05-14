@@ -89,7 +89,7 @@ export default function AdminReports() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="dashboard-surface space-y-6 animate-fade-in">
       <div className="glass-card-static p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-sm">

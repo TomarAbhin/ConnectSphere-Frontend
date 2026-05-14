@@ -137,7 +137,7 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
   const adminIndexMutation = useMutation({
     mutationFn: async () => searchApi.adminIndexPost({
       postId, authorId,
-      content: post?.content || '',
+      content: adminContentDraft.trim(),
       hashtags: parseHashtags(hashtagDraft),
       visibility: post?.visibility,
       deleted: Boolean(post?.deleted),
@@ -168,12 +168,27 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
   });
 
   const adminUpdateMutation = useMutation({
-    mutationFn: () => postApi.updatePost(postId, {
-      content: adminContentDraft.trim(),
-      visibility: post?.visibility,
-      mediaUrls: post?.mediaUrls || [],
-      postType: post?.postType,
-    }),
+    mutationFn: async () => {
+      const updated = await postApi.adminUpdatePost(postId, {
+        content: adminContentDraft.trim(),
+        visibility: post?.visibility,
+        mediaUrls: post?.mediaUrls || [],
+        postType: post?.postType,
+      });
+      try {
+        await searchApi.adminIndexPost({
+          postId,
+          authorId,
+          content: adminContentDraft.trim(),
+          hashtags: parseHashtags(hashtagDraft),
+          visibility: updated?.visibility || post?.visibility,
+          deleted: Boolean(updated?.deleted ?? post?.deleted),
+        });
+      } catch (error) {
+        // Keep the post update successful even if the search index refresh fails.
+      }
+      return updated;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
       queryClient.invalidateQueries({ queryKey: ['feed'] });

@@ -7,46 +7,50 @@ const SIZE_MAP = {
   xl: 'h-20 w-20 text-xl',
 };
 
-const GRADIENT_PAIRS = [
-  'from-brand-400 to-purple-500',
-  'from-violet-400 to-pink-500',
-  'from-cyan-400 to-brand-500',
-  'from-emerald-400 to-teal-500',
-  'from-amber-400 to-orange-500',
-  'from-rose-400 to-pink-600',
+const FALLBACK_COLORS = [
+  ['#6d5efc', '#8b5cf6'],
+  ['#22d3ee', '#3b82f6'],
+  ['#34d399', '#14b8a6'],
+  ['#f59e0b', '#f97316'],
+  ['#f472b6', '#ec4899'],
+  ['#fb7185', '#e11d48'],
 ];
 
-function getGradient(name) {
+function getFallbackAvatar(name) {
   const code = (name || 'U').charCodeAt(0);
-  return GRADIENT_PAIRS[code % GRADIENT_PAIRS.length];
+  const [start, end] = FALLBACK_COLORS[code % FALLBACK_COLORS.length];
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Default avatar">
+      <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${start}" />
+          <stop offset="100%" stop-color="${end}" />
+        </linearGradient>
+      </defs>
+      <rect width="120" height="120" rx="60" fill="url(#bg)" />
+      <circle cx="60" cy="47" r="20" fill="rgba(255,255,255,0.92)" />
+      <path d="M24 102c7-19 23-28 36-28s29 9 36 28" fill="rgba(255,255,255,0.92)" />
+      <path d="M36 94c5-11 14-16 24-16s19 5 24 16" fill="rgba(17,24,39,0.14)" />
+    </svg>
+  `.trim();
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
 export default function UserAvatar({ name, src, size = 'md', ring = false, storyRing = false }) {
   const sizeClass = SIZE_MAP[size] || SIZE_MAP.md;
-  const initials = (name || 'U')
-    .split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
 
-  const gradient = getGradient(name);
   const avatarSrc = resolveMediaUrl(src);
+  const fallbackSrc = getFallbackAvatar(name);
 
   const wrapperClass = storyRing ? 'avatar-ring-story story-ring-glow' : ring ? 'avatar-ring' : '';
 
-  const imgEl = avatarSrc ? (
+  const imgEl = (
     <img
-      src={avatarSrc}
+      src={avatarSrc || fallbackSrc}
       alt={name || 'User avatar'}
-      className={`${sizeClass} rounded-full object-cover ring-2 ring-white`}
+      className={`${sizeClass} rounded-full object-cover ring-2 ring-white bg-slate-200`}
     />
-  ) : (
-    <div
-      className={`${sizeClass} flex items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-semibold text-white ring-2 ring-white shadow-sm`}
-    >
-      {initials}
-    </div>
   );
 
   if (wrapperClass) {

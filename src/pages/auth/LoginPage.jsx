@@ -39,18 +39,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-4 py-8 lg:grid-cols-[1.05fr_0.95fr]">
+    <div className="auth-surface mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-4 py-8 lg:grid-cols-[1.05fr_0.95fr]">
       {/* Left hero */}
-      <div className="hidden hero-card p-10 text-white lg:block animate-fade-in">
+      <div className="hidden auth-hero-card p-10 text-white lg:block animate-fade-in">
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-indigo-200 backdrop-blur-sm border border-white/10">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-slate-300 backdrop-blur-sm border border-white/10">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse-soft" />
             ConnectSphere
           </div>
           <h1 className="mt-8 max-w-xl text-4xl font-extrabold leading-[1.15] tracking-tight">
             A calmer, cleaner way to return to your network.
           </h1>
-          <p className="mt-5 max-w-lg text-[0.935rem] leading-relaxed text-indigo-100/80">
+          <p className="mt-5 max-w-lg text-[0.935rem] leading-relaxed text-slate-300">
             Sign in to access your feed, explore trends, stories, notifications, and admin controls — all from one place.
           </p>
           <div className="mt-10 grid gap-3">
@@ -59,11 +59,11 @@ export default function LoginPage() {
               { icon: Zap, text: 'Instant reactions, comments, and profile actions' },
               { icon: Shield, text: 'Admin tools for moderation and user management' },
             ].map(({ icon: Icon, text }) => (
-              <div key={text} className="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/5 px-4 py-3.5 backdrop-blur-sm">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                  <Icon className="h-4 w-4 text-indigo-200" />
+              <div key={text} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 backdrop-blur-sm">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#111319] border border-white/10">
+                  <Icon className="h-4 w-4 text-brand-300" />
                 </div>
-                <span className="text-sm text-indigo-50/90">{text}</span>
+                <span className="text-sm text-slate-200">{text}</span>
               </div>
             ))}
           </div>
@@ -72,7 +72,7 @@ export default function LoginPage() {
 
       {/* Right form */}
       <div className="glass-card-static p-8 animate-fade-in-up">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Log in</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white">Log in</h1>
         <p className="mt-2 text-sm text-slate-400">Access your ConnectSphere account.</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -95,7 +95,7 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-slate-400">
           No account yet?{' '}
-          <Link to="/register" className="font-semibold text-brand-600 hover:text-brand-500 transition-colors">Register</Link>
+          <Link to="/register" className="font-semibold text-brand-300 hover:text-white transition-colors">Register</Link>
         </p>
       </div>
     </div>
