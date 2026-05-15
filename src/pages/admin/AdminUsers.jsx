@@ -46,7 +46,7 @@ export default function AdminUsers() {
     <div className="dashboard-surface space-y-5 animate-fade-in">
       <div className="glass-card-static p-6">
         <div className="flex items-center gap-3 mb-1">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-purple-500 text-white shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-sm">
             <Users className="h-5 w-5" />
           </div>
           <div>
@@ -55,7 +55,7 @@ export default function AdminUsers() {
           </div>
         </div>
         <div className="mt-4 flex gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-slate-200/60 bg-slate-50/60 px-4 py-2.5 transition-all focus-within:border-brand-300 focus-within:bg-white focus-within:shadow-glow-sm">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-slate-200/60 bg-slate-50/60 px-4 py-2.5 transition-all focus-within:border-indigo-300 focus-within:bg-white focus-within:shadow-sm">
             <Search className="h-4 w-4 shrink-0 text-slate-400" />
             <input value={queryText} onChange={(event) => setQueryText(event.target.value)}
               placeholder="Search users by username or name…"

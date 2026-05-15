@@ -8,19 +8,20 @@ const SIZE_MAP = {
 };
 
 const FALLBACK_COLORS = [
-  ['#6d5efc', '#8b5cf6'],
-  ['#22d3ee', '#3b82f6'],
-  ['#34d399', '#14b8a6'],
-  ['#f59e0b', '#f97316'],
-  ['#f472b6', '#ec4899'],
-  ['#fb7185', '#e11d48'],
+  ['#6366f1', '#818cf8'],
+  ['#3b82f6', '#60a5fa'],
+  ['#14b8a6', '#2dd4bf'],
+  ['#f59e0b', '#fbbf24'],
+  ['#ec4899', '#f472b6'],
+  ['#ef4444', '#f87171'],
 ];
 
 function getFallbackAvatar(name) {
   const code = (name || 'U').charCodeAt(0);
   const [start, end] = FALLBACK_COLORS[code % FALLBACK_COLORS.length];
+  const initials = (name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Default avatar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
       <defs>
         <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${start}" />
@@ -28,18 +29,14 @@ function getFallbackAvatar(name) {
         </linearGradient>
       </defs>
       <rect width="120" height="120" rx="60" fill="url(#bg)" />
-      <circle cx="60" cy="47" r="20" fill="rgba(255,255,255,0.92)" />
-      <path d="M24 102c7-19 23-28 36-28s29 9 36 28" fill="rgba(255,255,255,0.92)" />
-      <path d="M36 94c5-11 14-16 24-16s19 5 24 16" fill="rgba(17,24,39,0.14)" />
+      <text x="60" y="66" text-anchor="middle" fill="white" font-family="Inter,system-ui,sans-serif" font-size="42" font-weight="600">${initials}</text>
     </svg>
   `.trim();
-
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
 export default function UserAvatar({ name, src, size = 'md', ring = false, storyRing = false }) {
   const sizeClass = SIZE_MAP[size] || SIZE_MAP.md;
-
   const avatarSrc = resolveMediaUrl(src);
   const fallbackSrc = getFallbackAvatar(name);
 
@@ -49,13 +46,12 @@ export default function UserAvatar({ name, src, size = 'md', ring = false, story
     <img
       src={avatarSrc || fallbackSrc}
       alt={name || 'User avatar'}
-      className={`${sizeClass} rounded-full object-cover ring-2 ring-white bg-slate-200`}
+      className={`${sizeClass} rounded-full object-cover ring-2 ring-white bg-slate-100`}
     />
   );
 
   if (wrapperClass) {
     return <div className={wrapperClass}>{imgEl}</div>;
   }
-
   return imgEl;
 }

@@ -22,13 +22,7 @@ export default function UserCard({ user, action }) {
     if (!canReport) return;
     const reason = promptForReportReason('account');
     if (!reason) return;
-
-    reportMutation.mutate({
-      targetType: 'USER',
-      targetId: user.userId,
-      targetUserId: user.userId,
-      reason,
-    });
+    reportMutation.mutate({ targetType: 'USER', targetId: user.userId, targetUserId: user.userId, reason });
   };
 
   const displayName = user?.fullName || user?.username || 'Removed user';
@@ -39,13 +33,13 @@ export default function UserCard({ user, action }) {
         <div className="min-w-0">
           <p className="truncate font-semibold text-slate-800">{displayName}</p>
           {user?.username ? <p className="truncate text-sm text-slate-400">@{user.username}</p> : null}
-          {user?.role ? (
-            <span className={`cs-badge mt-1 ${isAdminAccount ? 'bg-sky-50 text-sky-700 border border-sky-100' : 'bg-brand-50 text-brand-600'}`}>
-              {user.role}
-            </span>
-          ) : null}
-          <div className="mt-1.5">
-            <span className={`cs-badge ${user?.active === false ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {user?.role ? (
+              <span className={`cs-badge ${isAdminAccount ? 'bg-sky-50 text-sky-600 border border-sky-200' : 'bg-indigo-50 text-indigo-600'}`}>
+                {user.role}
+              </span>
+            ) : null}
+            <span className={`cs-badge ${user?.active === false ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'}`}>
               {user?.active === false ? 'Suspended' : 'Active'}
             </span>
           </div>
@@ -59,12 +53,7 @@ export default function UserCard({ user, action }) {
           </button>
         ) : null}
         {user?.userId ? (
-          <Link
-            to={`/profile/${user.userId}`}
-            className="cs-btn cs-btn-secondary text-xs"
-          >
-            View
-          </Link>
+          <Link to={`/profile/${user.userId}`} className="cs-btn cs-btn-primary text-xs">View</Link>
         ) : null}
       </div>
     </div>

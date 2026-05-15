@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   const trendingHashtags = Array.isArray(analytics.trendingHashtags) ? analytics.trendingHashtags : [];
 
   const stats = [
-    { label: 'Total users', value: analytics.totalUsers ?? totalUsers, icon: Users, color: 'from-brand-500 to-purple-500' },
+    { label: 'Total users', value: analytics.totalUsers ?? totalUsers, icon: Users, color: 'from-indigo-500 to-purple-500' },
     { label: 'Total posts', value: analytics.totalPosts ?? totalPosts, icon: FileText, color: 'from-cyan-500 to-blue-500' },
     { label: 'Daily active', value: analytics.dailyActiveUsers ?? 0, icon: Activity, color: 'from-emerald-500 to-teal-500' },
     { label: 'Trending tags', value: analytics.trendingHashtags?.length ?? totalTags, icon: Hash, color: 'from-amber-500 to-orange-500' },
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             {quickLinks.map(({ to, label, icon: Icon }) => (
               <Link key={to} to={to}
-                className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 text-sm font-medium text-slate-700 transition hover:bg-white hover:border-brand-200 hover:shadow-sm">
+                className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 text-sm font-medium text-slate-700 transition hover:bg-white hover:border-indigo-200 hover:shadow-sm">
                 <Icon className="h-4 w-4 text-slate-400" /> {label}
               </Link>
             ))}
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
         {/* System hashtags */}
         <div className="glass-card-static p-5">
           <h2 className="text-[0.7rem] font-semibold uppercase tracking-widest text-slate-400">System hashtags</h2>
-          <div className="mt-4 rounded-2xl border border-dashed border-brand-200 bg-brand-50/40 p-4">
+          <div className="mt-4 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/40 p-4">
             <p className="text-sm text-slate-600">Create a system tag available across search and moderation.</p>
             <div className="mt-3 flex gap-2">
               <input value={tagText} onChange={(event) => setTagText(event.target.value)}

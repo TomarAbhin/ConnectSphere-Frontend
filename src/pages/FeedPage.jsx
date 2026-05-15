@@ -19,11 +19,7 @@ import {
   Hash,
   Home,
   ImagePlus,
-  LogIn,
-  LogOut,
-  Search,
   Settings2,
-  Sparkles,
   Shield,
   UserPlus,
 } from 'lucide-react';
@@ -59,8 +55,6 @@ function getHandle(user) {
 const sidebarLinks = [
   { to: '/feed', label: 'Home', icon: Home },
   { to: '/explore', label: 'Explore', icon: Compass },
-  { to: '/search', label: 'Search', icon: Search },
-  { to: '/stories', label: 'Stories', icon: Sparkles, authOnly: true },
   { to: '/notifications', label: 'Notifications', icon: Bell, authOnly: true },
   { to: '/profile/edit', label: 'Settings', icon: Settings2, authOnly: true },
   { to: '/admin', label: 'Admin', icon: Shield, authOnly: true, adminOnly: true },
@@ -89,11 +83,6 @@ export default function FeedPage() {
     queryFn: followApi.suggested,
     enabled: Boolean(isLoggedIn && !isGuest),
   });
-  const countsQuery = useQuery({
-    queryKey: ['follow-counts', user?.userId],
-    queryFn: () => followApi.counts(user?.userId),
-    enabled: Boolean(isLoggedIn && user?.userId),
-  });
 
   const followMutation = useMutation({
     mutationFn: (followeeId) => followApi.follow(followeeId),
@@ -108,12 +97,7 @@ export default function FeedPage() {
   const stories = asArray(storiesQuery.data);
   const hashtags = asArray(hashtagsQuery.data);
   const suggestedUsers = asArray(suggestionsQuery.data);
-  const counts = countsQuery.data || {};
   const isAdmin = user?.role === 'ADMIN';
-  const profileName = user?.fullName || user?.username || 'Guest user';
-  const profileHandle = user?.username ? `@${user.username}` : isLoggedIn ? 'Active account' : 'Public visitor';
-  const totalFollowing = Number(counts.followingCount ?? 0);
-  const totalFollowers = Number(counts.followerCount ?? 0);
 
   const storyItems = useMemo(() => {
     const activeStories = stories.slice(0, 7).map((story, index) => {
@@ -129,15 +113,8 @@ export default function FeedPage() {
         storyId: story.storyId || story.id,
       };
     });
-
     return [
-      {
-        key: 'add-story',
-        label: 'Add story',
-        caption: 'Open stories',
-        to: '/stories',
-        isAdd: true,
-      },
+      { key: 'add-story', label: 'Add story', caption: 'Open stories', to: '/stories', isAdd: true },
       ...activeStories,
     ];
   }, [stories]);
@@ -162,46 +139,42 @@ export default function FeedPage() {
     .map((item, index) => {
       const tag = getTagLabel(item);
       if (!tag) return null;
-      return {
-        key: item?.hashtagId || tag,
-        tag,
-        count: getTagCount(item),
-        rank: index + 1,
-      };
+      return { key: item?.hashtagId || tag, tag, count: getTagCount(item), rank: index + 1 };
     })
     .filter(Boolean);
   const suggestedCards = suggestedUsers.slice(0, 3);
 
   return (
-    <div className="dashboard-surface min-h-[calc(100vh-6rem)] rounded-[32px] border border-white/10 bg-[#0f1115] p-4 shadow-[0_30px_90px_rgba(0,0,0,0.42)] lg:p-5">
-      <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_320px]">
-        <aside className="xl:sticky xl:top-24 xl:h-[calc(100vh-7rem)]">
+    <div className="dashboard-surface">
+      <div className="grid gap-5 xl:grid-cols-[260px_minmax(0,1fr)_300px]">
+        {/* Left sidebar */}
+        <aside className="xl:sticky xl:top-20 xl:h-[calc(100vh-6rem)]">
           <div className="flex h-full min-h-0 flex-col gap-4">
-            <section className="glass-card-static flex-1 min-h-0 overflow-y-auto p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-sm font-semibold">CS</span>
+            <section className="glass-card-static flex-1 min-h-0 overflow-y-auto p-4">
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 shadow-sm">
+                  <span className="text-xs font-bold text-white">CS</span>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold tracking-tight text-white">ConnectSphere</p>
-                  <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Social feed</p>
+                  <p className="text-sm font-semibold text-slate-800">ConnectSphere</p>
+                  <p className="text-[0.65rem] text-slate-400">Social feed</p>
                 </div>
               </div>
 
-              <nav className="mt-5 grid gap-2">
+              <nav className="grid gap-1">
                 {sidebarLinksVisible.map(({ to, label, icon: Icon }) => {
                   const active = location.pathname === to;
                   return (
                     <Link
                       key={to}
                       to={to}
-                      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition ${
+                      className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
                         active
-                          ? 'border-white/10 bg-white/10 text-white'
-                          : 'border-transparent bg-white/5 text-slate-300 hover:border-white/10 hover:bg-white/10 hover:text-white'
+                          ? 'bg-indigo-50 text-indigo-600'
+                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
                       }`}
                     >
-                      <Icon className="h-4 w-4 shrink-0" />
+                      <Icon className={`h-[18px] w-[18px] shrink-0 ${active ? 'text-indigo-500' : ''}`} />
                       <span>{label}</span>
                     </Link>
                   );
@@ -211,97 +184,50 @@ export default function FeedPage() {
                   <button
                     type="button"
                     onClick={handleComposeClick}
-                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-3 text-sm font-semibold text-white transition hover:from-brand-500 hover:to-cyan-500"
+                    className="mt-2 flex items-center gap-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:shadow-md"
                   >
-                    <ImagePlus className="h-4 w-4 shrink-0" />
+                    <ImagePlus className="h-[18px] w-[18px] shrink-0" />
                     <span>{showComposer ? 'Close composer' : 'Compose post'}</span>
                   </button>
                 ) : null}
               </nav>
             </section>
 
-            <section className="glass-card-static p-4">
-              {isLoggedIn ? (
-                <>
-                  <Link to={user?.userId ? `/profile/${user.userId}` : '/profile'} className="block rounded-2xl transition hover:bg-white/5">
-                    <div className="flex items-center gap-3 p-1">
-                      <UserAvatar name={profileName} src={user?.profilePicUrl} size="lg" />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-white">{profileName}</p>
-                        <p className="truncate text-xs text-slate-400">{profileHandle}</p>
-                        <p className="mt-1 text-[0.7rem] text-slate-500">
-                          {totalFollowers} followers · {totalFollowing} following
-                        </p>
-                        <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-brand-300">View profile</p>
-                      </div>
-                    </div>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-3">
-                    <UserAvatar name={profileName} src={user?.profilePicUrl} size="lg" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-white">{profileName}</p>
-                      <p className="truncate text-xs text-slate-400">Sign in for the full feed</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <Link to="/login" className="cs-btn cs-btn-secondary flex-1 text-xs">
-                      <LogIn className="h-3.5 w-3.5" />
-                      Login
-                    </Link>
-                    <Link to="/register" className="cs-btn cs-btn-primary flex-1 text-xs">
-                      Register
-                    </Link>
-                  </div>
-                </>
-              )}
-            </section>
 
           </div>
         </aside>
 
+        {/* Center content */}
         <section className="space-y-4 min-w-0">
           <div className="glass-card-static p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-slate-400">Stories</p>
-                <h2 className="mt-1 text-sm font-semibold text-white">Open and add stories</h2>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Stories</p>
+                <h2 className="mt-0.5 text-sm font-semibold text-slate-700">Open and add stories</h2>
               </div>
-              <Link to="/stories" className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-300 transition hover:text-white">
-                Open stories
-                <ArrowRight className="h-4 w-4" />
+              <Link to="/stories" className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-500 transition hover:text-indigo-600">
+                Open stories <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-            <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+            <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
               {storyItems.map((story) => (
-                <Link key={story.key} to={story.to} className="group flex w-24 shrink-0 flex-col items-center text-center">
-                  <span className="rounded-full bg-gradient-to-br from-brand-500 via-cyan-400 to-teal-400 p-[2px]">
+                <Link key={story.key} to={story.to} className="group flex w-[68px] shrink-0 flex-col items-center text-center">
+                  <span className="rounded-full bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-[2px]">
                     {story.isAdd ? (
-                      <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-[#111319] text-white">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-slate-500 transition group-hover:text-indigo-500">
                         <ImagePlus className="h-5 w-5" />
                       </span>
                     ) : (
-                      <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-[#111319]">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white">
                         <UserAvatar name={story.label} src={story.avatar} size="lg" storyRing />
                       </span>
                     )}
                   </span>
-                  <span className="mt-2 truncate text-xs font-medium text-white group-hover:text-brand-200">{story.label}</span>
-                  <span className="truncate text-[0.68rem] text-slate-500">{story.caption}</span>
+                  <span className="mt-1 w-full truncate text-[0.68rem] font-medium text-slate-500 group-hover:text-slate-700">{story.label}</span>
                 </Link>
               ))}
-              {storyItems.length === 1 ? <p className="self-center text-sm text-slate-500">No active stories yet.</p> : null}
+              {storyItems.length === 1 ? <p className="self-center text-sm text-slate-400">No active stories yet.</p> : null}
             </div>
           </div>
 
@@ -310,23 +236,17 @@ export default function FeedPage() {
           ) : !isLoggedIn || isGuest ? (
             <div className="glass-card-static p-5">
               <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-brand-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500">
                   <ImagePlus className="h-5 w-5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-base font-semibold text-white">Sign in to post</p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                    Login to share updates, react to posts, and follow accounts.
-                  </p>
+                  <p className="text-base font-semibold text-slate-800">Sign in to post</p>
+                  <p className="mt-1 text-sm text-slate-400">Login to share updates, react to posts, and follow accounts.</p>
                 </div>
               </div>
               <div className="mt-4 flex gap-2">
-                <Link to="/login" className="cs-btn cs-btn-primary flex-1 text-xs">
-                  Login
-                </Link>
-                <Link to="/register" className="cs-btn cs-btn-secondary flex-1 text-xs">
-                  Register
-                </Link>
+                <Link to="/login" className="cs-btn cs-btn-primary flex-1 text-xs">Login</Link>
+                <Link to="/register" className="cs-btn cs-btn-secondary flex-1 text-xs">Register</Link>
               </div>
             </div>
           ) : null}
@@ -341,55 +261,56 @@ export default function FeedPage() {
           ) : null}
         </section>
 
-        <aside className="space-y-4 xl:sticky xl:top-24 xl:h-fit">
-          <section className="glass-card-static p-5">
+        {/* Right sidebar */}
+        <aside className="space-y-4 xl:sticky xl:top-20 xl:h-fit">
+          <section className="glass-card-static p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-slate-400">Hashtags</p>
-                <h2 className="mt-1 text-sm font-semibold text-white">Trending</h2>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Hashtags</p>
+                <h2 className="mt-0.5 text-sm font-semibold text-slate-700">Trending</h2>
               </div>
-              <span className="cs-badge bg-white/5 text-slate-200 border border-white/10">{trendingCards.length} tags</span>
+              <span className="cs-badge bg-slate-100 text-slate-500">{trendingCards.length} tags</span>
             </div>
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-3 space-y-1.5">
               {trendingCards.length > 0 ? trendingCards.map((item) => (
                 <Link
                   key={item.key}
                   to={`/hashtag/${encodeURIComponent(item.tag)}`}
-                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:bg-white/10"
+                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 transition hover:bg-indigo-50"
                 >
-                  <span className="flex items-center gap-2 text-sm font-medium text-white">
-                    <Hash className="h-4 w-4 text-brand-300" />
+                  <span className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                    <Hash className="h-4 w-4 text-indigo-400" />
                     #{item.tag}
                   </span>
                   <span className="text-xs text-slate-400">{formatCount(item.count)} posts</span>
                 </Link>
-              )) : <p className="text-sm text-slate-500">No trending hashtags yet.</p>}
+              )) : <p className="text-sm text-slate-400">No trending hashtags yet.</p>}
             </div>
           </section>
 
-          <section className="glass-card-static p-5">
+          <section className="glass-card-static p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-slate-400">Suggested</p>
-                <h2 className="mt-1 text-sm font-semibold text-white">People to follow</h2>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Suggested</p>
+                <h2 className="mt-0.5 text-sm font-semibold text-slate-700">People to follow</h2>
               </div>
-              <span className="cs-badge bg-white/5 text-slate-200 border border-white/10">{suggestedCards.length} accounts</span>
+              <span className="cs-badge bg-slate-100 text-slate-500">{suggestedCards.length}</span>
             </div>
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-3 space-y-2">
               {isLoggedIn && !isGuest ? (
                 suggestedCards.length > 0 ? suggestedCards.map((candidate) => {
                   const userId = candidate.userId || candidate.id;
                   const mutualConnections = Number(candidate.mutualCount ?? candidate.mutualConnections ?? 0);
                   return (
-                    <div key={userId || candidate.username} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                      <Link to={userId ? `/profile/${userId}` : '/search'} className="flex min-w-0 flex-1 items-center gap-3">
+                    <div key={userId || candidate.username} className="flex items-center gap-3 rounded-lg bg-slate-50 p-2.5">
+                      <Link to={userId ? `/profile/${userId}` : '/search'} className="flex min-w-0 flex-1 items-center gap-2.5">
                         <UserAvatar name={getDisplayName(candidate)} src={candidate.profilePicUrl} size="md" />
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-white">{getDisplayName(candidate)}</p>
+                          <p className="truncate text-sm font-semibold text-slate-700">{getDisplayName(candidate)}</p>
                           <p className="truncate text-xs text-slate-400">
-                            {mutualConnections > 0 ? `${mutualConnections} mutual connections` : getHandle(candidate)}
+                            {mutualConnections > 0 ? `${mutualConnections} mutual` : getHandle(candidate)}
                           </p>
                         </div>
                       </Link>
@@ -397,16 +318,15 @@ export default function FeedPage() {
                         type="button"
                         onClick={() => userId && followMutation.mutate(userId)}
                         disabled={!userId || followMutation.isPending}
-                        className="cs-btn cs-btn-secondary shrink-0 px-3 py-2 text-xs"
+                        className="cs-btn cs-btn-primary shrink-0 px-3 py-1.5 text-xs"
                       >
-                        <UserPlus className="h-3.5 w-3.5" />
-                        Follow
+                        <UserPlus className="h-3.5 w-3.5" /> Follow
                       </button>
                     </div>
                   );
-                }) : <p className="text-sm text-slate-500">No suggestions right now.</p>
+                }) : <p className="text-sm text-slate-400">No suggestions right now.</p>
               ) : (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">
+                <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-400">
                   Sign in to get personalized follow suggestions.
                 </div>
               )}

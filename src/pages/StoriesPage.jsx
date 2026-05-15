@@ -174,7 +174,7 @@ export default function StoriesPage() {
           {/* Add story button */}
           <button type="button" onClick={() => fileInputRef.current?.click()}
             className="group flex shrink-0 flex-col items-center gap-1.5">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-purple-500 text-white shadow-glow-sm transition group-hover:shadow-glow">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-sm transition hover:shadow-md">
               <Plus className="h-6 w-6" />
             </div>
             <p className="text-[0.7rem] font-medium text-slate-500">Add story</p>
@@ -197,18 +197,18 @@ export default function StoriesPage() {
 
       {isViewerOpen && activeStory ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#090b10]/92 px-4 py-6 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm"
           onClick={(event) => {
             if (event.target === event.currentTarget) {
               closeStoryViewer();
             }
           }}
         >
-          <div className="relative flex h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-[#111319] shadow-2xl">
+          <div className="relative flex h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
             <button
               type="button"
               onClick={closeStoryViewer}
-              className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white transition hover:bg-white/15"
+              className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50"
               aria-label="Close story viewer"
             >
               <X className="h-5 w-5" />
@@ -219,7 +219,7 @@ export default function StoriesPage() {
                 <button
                   type="button"
                   onClick={() => setActiveIndex((value) => (value - 1 + stories.length) % stories.length)}
-                  className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white shadow-lg transition hover:bg-white/15"
+                  className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-md transition hover:bg-slate-50"
                   aria-label="Previous story"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -227,7 +227,7 @@ export default function StoriesPage() {
                 <button
                   type="button"
                   onClick={() => setActiveIndex((value) => (value + 1) % stories.length)}
-                  className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white shadow-lg transition hover:bg-white/15"
+                  className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-md transition hover:bg-slate-50"
                   aria-label="Next story"
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -257,14 +257,14 @@ export default function StoriesPage() {
             <div className="px-5 pb-3">
               <div className="flex gap-1">
                 {stories.map((_, i) => (
-                  <div key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-slate-200">
-                    <div className={`h-full rounded-full transition-all duration-500 ${i <= activeIndex ? 'w-full bg-gradient-to-r from-brand-500 to-purple-500' : 'w-0'}`} />
+                  <div key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-slate-100">
+                    <div className={`h-full rounded-full transition-all duration-500 ${i <= activeIndex ? 'w-full bg-gradient-to-r from-indigo-500 to-purple-500' : 'w-0'}`} />
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex-1 overflow-hidden bg-black">
+            <div className="flex-1 overflow-hidden bg-slate-900">
               {resolveMediaUrl(activeStory.mediaUrl) ? (
                 activeStory.mediaType === 'VIDEO' ? (
                   <video controls playsInline autoPlay src={resolveMediaUrl(activeStory.mediaUrl)} className="h-full w-full object-contain" />
@@ -276,12 +276,12 @@ export default function StoriesPage() {
               )}
             </div>
 
-            <div className="border-t border-white/10 bg-[#111319] px-5 py-4">
+            <div className="border-t border-slate-200 bg-white px-5 py-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-white">{activeStory.authorFullName || activeStory.authorUsername || `User #${activeStory.authorId}`}</p>
+                  <p className="text-sm font-semibold text-slate-800">{activeStory.authorFullName || activeStory.authorUsername || `User #${activeStory.authorId}`}</p>
                   <p className="text-xs text-slate-500">{activeStory.authorUsername ? `@${activeStory.authorUsername}` : 'Story author'}</p>
-                  {activeStory.caption ? <p className="mt-2 max-w-2xl text-sm text-slate-300">{activeStory.caption}</p> : null}
+                  {activeStory.caption ? <p className="mt-2 max-w-2xl text-sm text-slate-500">{activeStory.caption}</p> : null}
                 </div>
 
                 {canReactToStory ? (
@@ -298,7 +298,7 @@ export default function StoriesPage() {
                   {storyReactorUsers.length > 0 ? (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {storyReactorUsers.map((reactor) => (
-                        <div key={reactor.userId} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 pr-3 text-xs text-slate-300">
+                        <div key={reactor.userId} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 pr-3 text-xs text-slate-600">
                           <UserAvatar name={reactor.fullName || reactor.username} src={reactor.profilePicUrl} size="sm" />
                           <span>{reactor.fullName || reactor.username || `User #${reactor.userId}`}</span>
                         </div>

@@ -70,7 +70,7 @@ export default function AdminReports() {
   const trendingTags = Array.isArray(tagsQuery.data) ? tagsQuery.data : tagsQuery.data?.content || [];
   const statusBadgeClass = {
     OPEN: 'bg-amber-50 text-amber-700 border-amber-100',
-    REVIEWED: 'bg-brand-50 text-brand-700 border-brand-100',
+    REVIEWED: 'bg-indigo-50 text-indigo-700 border-indigo-100',
     RESOLVED: 'bg-emerald-50 text-emerald-700 border-emerald-100',
     REJECTED: 'bg-rose-50 text-rose-700 border-rose-100',
   };
@@ -82,7 +82,7 @@ export default function AdminReports() {
   };
 
   const stats = [
-    { label: 'Active users', value: users.length, icon: Users, color: 'from-brand-500 to-purple-500' },
+    { label: 'Active users', value: users.length, icon: Users, color: 'from-indigo-500 to-purple-500' },
     { label: 'Posts', value: totalPosts, icon: FileText, color: 'from-cyan-500 to-blue-500' },
     { label: 'Trending tags', value: trendingTags.length, icon: Hash, color: 'from-amber-500 to-orange-500' },
     { label: 'Open reports', value: reportStats.open, icon: ShieldAlert, color: 'from-rose-500 to-pink-500' },
@@ -129,7 +129,7 @@ export default function AdminReports() {
           <div className="flex flex-wrap gap-2 text-xs">
             <span className="cs-badge bg-slate-50 text-slate-600 border border-slate-100">{reportStats.total} total</span>
             <span className="cs-badge bg-amber-50 text-amber-700 border border-amber-100">{reportStats.open} open</span>
-            <span className="cs-badge bg-brand-50 text-brand-700 border border-brand-100">{reportStats.reviewed} reviewed</span>
+            <span className="cs-badge bg-indigo-50 text-indigo-700 border border-indigo-100">{reportStats.reviewed} reviewed</span>
             <span className="cs-badge bg-emerald-50 text-emerald-700 border border-emerald-100">{reportStats.resolved} resolved</span>
           </div>
         </div>
@@ -221,7 +221,7 @@ export default function AdminReports() {
               <label key={user.userId || user.id}
                 className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 text-sm transition ${
                   selectedRecipients.includes(user.userId || user.id)
-                    ? 'border-brand-300 bg-brand-50/60 text-brand-800'
+                    ? 'border-indigo-300 bg-indigo-50/60 text-indigo-800'
                     : 'border-slate-100 bg-slate-50/50 text-slate-700 hover:bg-white'
                 }`}
               >
@@ -231,7 +231,7 @@ export default function AdminReports() {
                 </span>
                 <input type="checkbox" checked={selectedRecipients.includes(user.userId || user.id)}
                   onChange={() => toggleRecipient(user.userId || user.id)}
-                  className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
+                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
               </label>
             ))}
           </div>

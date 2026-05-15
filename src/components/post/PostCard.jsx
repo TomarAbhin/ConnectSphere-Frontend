@@ -270,7 +270,7 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
           <Link to={`/profile/${authorId}`} className="group flex items-center gap-3 rounded-xl outline-none">
             <UserAvatar name={author.fullName || author.username} src={author.profilePicUrl} />
             <div>
-              <p className="font-semibold text-slate-800 group-hover:text-brand-600 transition-colors">{author.fullName || author.username}</p>
+              <p className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">{author.fullName || author.username}</p>
               <p className="text-xs text-slate-400">{formatDate(post?.createdAt)}</p>
             </div>
           </Link>
@@ -298,7 +298,7 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
         <div className="mt-3 flex flex-wrap gap-1.5 px-5">
           {hashtags.map((tag) => (
             <Link key={tag} to={`/hashtag/${encodeURIComponent(tag)}`}
-              className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600 transition hover:bg-brand-100">
+              className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100">
               #{tag}
             </Link>
           ))}
@@ -429,8 +429,8 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
 
       {/* Admin mode */}
       {adminMode ? (
-        <div className="border-t border-dashed border-brand-200 bg-brand-50/40 px-5 py-4">
-          <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-3">Admin Controls</p>
+        <div className="border-t border-dashed border-indigo-200 bg-indigo-50/40 px-5 py-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-3">Admin Controls</p>
           <div className="grid gap-3">
             <textarea value={adminContentDraft} onChange={(event) => setAdminContentDraft(event.target.value)} rows={4}
               placeholder="Edit post content…" className="cs-input resize-none" />
