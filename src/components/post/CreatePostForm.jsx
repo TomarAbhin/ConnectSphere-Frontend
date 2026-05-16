@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useCreatePost } from '../../hooks/usePosts';
 import { inferMediaType, mediaApi } from '../../api/mediaApi';
 import { Image, Send, Globe, Users, Lock } from 'lucide-react';
@@ -16,20 +16,42 @@ export default function CreatePostForm() {
   const [mediaUrls, setMediaUrls] = useState('');
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const createPost = useCreatePost();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim()) return;
     setUploading(true);
-    const parsed = mediaUrls.split(/\n|,/).map((s) => s.trim()).filter(Boolean);
-    if (files && files.length) {
-      for (const file of files) {
-        try { const mt = inferMediaType(file); const res = await mediaApi.uploadMedia(file, { linkedPostId: null, mediaType: mt }); const url = res?.url || res?.mediaUrl || res?.path || res?.data || null; if (url) parsed.push(url); } catch {}
+    try {
+      const parsed = mediaUrls.split(/\n|,/).map((s) => s.trim()).filter(Boolean);
+      if (files && files.length) {
+        for (const file of files) {
+          try {
+            const mt = inferMediaType(file);
+            const res = await mediaApi.uploadMedia(file, { linkedPostId: null, mediaType: mt });
+            const url = res?.url || res?.mediaUrl || res?.path || res?.data || null;
+            if (url) parsed.push(url);
+          } catch {}
+        }
       }
+      await createPost.mutateAsync({
+        content,
+        visibility,
+        postType: parsed.length > 0 ? 'MEDIA' : postType,
+        mediaUrls: parsed,
+      });
+      setContent('');
+      setVisibility('PUBLIC');
+      setPostType('TEXT');
+      setMediaUrls('');
+      setFiles([]);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } finally {
+      setUploading(false);
     }
-    await createPost.mutateAsync({ content, visibility, postType, mediaUrls: parsed });
-    setContent(''); setVisibility('PUBLIC'); setPostType('TEXT'); setMediaUrls(''); setFiles([]); setUploading(false);
   };
 
   const VisIcon = VISIBILITY_OPTIONS.find((v) => v.value === visibility)?.icon || Globe;
@@ -57,13 +79,13 @@ export default function CreatePostForm() {
         <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-4 transition hover:border-indigo-300 hover:bg-indigo-50/30">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-500"><Image className="h-5 w-5" /></div>
           <div className="flex-1"><p className="text-sm font-medium text-slate-700">Upload media</p><p className="text-xs text-slate-400">Images or videos</p></div>
-          <input type="file" multiple accept="image/*,video/*" onChange={(e) => setFiles(Array.from(e.target.files || []))} className="hidden" />
+          <input ref={fileInputRef} type="file" multiple accept="image/*,video/*" onChange={(e) => setFiles(Array.from(e.target.files || []))} className="hidden" />
           {files.length > 0 ? <span className="cs-badge bg-emerald-50 text-emerald-600 border border-emerald-200">{files.length} file{files.length > 1 ? 's' : ''}</span> : null}
         </label>
       </div>
       <div className="mt-4 flex items-center justify-between border-t border-slate-100 px-5 py-4">
         <p className="text-xs text-slate-400">Public by default.</p>
-        <button type="submit" disabled={uploading || createPost.isPending} className="cs-btn cs-btn-primary"><Send className="h-4 w-4" /> {uploading ? 'Uploading…' : 'Share post'}</button>
+        <button type="submit" disabled={uploading || createPost.isPending} className="cs-btn cs-btn-primary"><Send className="h-4 w-4" /> {uploading ? 'Uploading...' : 'Share post'}</button>
       </div>
     </form>
   );

@@ -109,7 +109,7 @@ export default function FeedPage() {
         label: name,
         caption: story?.authorUsername ? `@${story.authorUsername}` : 'Story',
         avatar: story?.authorProfilePicUrl || author.profilePicUrl || author.avatar,
-        to: authorId ? `/profile/${authorId}` : '/stories',
+        to: '/stories',
         storyId: story.storyId || story.id,
       };
     });

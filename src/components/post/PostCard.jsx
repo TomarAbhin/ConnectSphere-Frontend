@@ -121,6 +121,8 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['is-following', authorId] });
       queryClient.invalidateQueries({ queryKey: ['following'] });
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
+      queryClient.invalidateQueries({ queryKey: ['posts', 'user', authorId] });
       toast.success('Followed user');
     },
   });
@@ -130,6 +132,8 @@ export default function PostCard({ post, onEdit, onDelete, onReact, adminMode = 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['is-following', authorId] });
       queryClient.invalidateQueries({ queryKey: ['following'] });
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
+      queryClient.invalidateQueries({ queryKey: ['posts', 'user', authorId] });
       toast.success('Unfollowed user');
     },
   });

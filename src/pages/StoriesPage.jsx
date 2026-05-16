@@ -10,7 +10,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import ReactionPicker from '../components/common/ReactionPicker';
 import { resolveMediaUrl } from '../utils/mediaUrl';
-import { Plus, Eye, Clock, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Eye, Clock, X, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 
 function detectStoryMediaType(file) {
   return file?.type?.startsWith('video/') ? 'VIDEO' : 'IMAGE';
@@ -97,7 +97,8 @@ export default function StoriesPage() {
       }));
       return { likes: Array.isArray(likes) ? likes : [], users };
     },
-    enabled: Boolean(activeStoryId),
+    enabled: Boolean(canReactToStory),
+    retry: false,
   });
 
   const currentStoryLike = useMemo(() => {
@@ -252,7 +253,7 @@ export default function StoriesPage() {
                 ) : null}
                 {activeStory.likesCount != null ? (
                   <span className="inline-flex items-center gap-1">
-                    <span className="text-base leading-none">♥</span> {activeStory.likesCount} reactions
+                    <Heart className="h-3.5 w-3.5" /> {activeStory.likesCount} reactions
                   </span>
                 ) : null}
                 <span className="inline-flex items-center gap-1">
