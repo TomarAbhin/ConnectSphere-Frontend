@@ -203,6 +203,13 @@ export default function StoriesPage() {
               closeStoryViewer();
             }
           }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+              if (event.target === event.currentTarget) closeStoryViewer();
+            }
+          }}
         >
           <div className="relative flex h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
             <button

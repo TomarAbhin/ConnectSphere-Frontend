@@ -16,7 +16,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { toast.error('Enter a valid email'); return; }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(form.email)) { toast.error('Enter a valid email'); return; }
     if (form.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
     if (form.role === 'ADMIN' && !form.adminSecretKey.trim()) { toast.error('Admin key required'); return; }
     setLoading(true);
