@@ -18,14 +18,28 @@ const TYPE_STYLES = {
 };
 
 export default function NotificationsPage() {
-  const { user } = useAuth();
+  const { user, accessToken, isLoggedIn, hasHydrated } = useAuth();
   const queryClient = useQueryClient();
   const setUnreadCount = useNotificationStore((state) => state.setUnreadCount);
   const navigate = useNavigate();
 
-  const notificationsQuery = useQuery({ queryKey: ['notifications', user?.userId], queryFn: () => notificationApi.getByRecipient(user?.userId), enabled: Boolean(user?.userId) });
-  const markAllRead = useMutation({ mutationFn: () => notificationApi.markAllRead(user?.userId), onSuccess: () => { setUnreadCount(0); queryClient.invalidateQueries({ queryKey: ['notifications'] }); } });
-  const markRead = useMutation({ mutationFn: (id) => notificationApi.markRead(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }) });
+  const isReady = hasHydrated && isLoggedIn && Boolean(accessToken) && Boolean(user?.userId);
+
+  const notificationsQuery = useQuery({
+    queryKey: ['notifications', user?.userId],
+    queryFn: () => notificationApi.getByRecipient(user.userId),
+    enabled: isReady,
+  });
+  const markAllRead = useMutation({
+    mutationFn: () => notificationApi.markAllRead(user.userId),
+    onSuccess: () => { setUnreadCount(0); queryClient.invalidateQueries({ queryKey: ['notifications'] }); },
+  });
+  const markRead = useMutation({
+    mutationFn: (id) => notificationApi.markRead(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+
+  if (!isReady) return <LoadingSpinner />;
 
   const notifications = Array.isArray(notificationsQuery.data) ? notificationsQuery.data : notificationsQuery.data?.content || [];
   if (notificationsQuery.isLoading) return <LoadingSpinner />;
